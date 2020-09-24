@@ -23,14 +23,17 @@ export default class MessageScreen extends React.Component {
 
   componentDidMount() {
     this.setState({name: this.props.route.params.username});
-    this.socket = io('http://192.168.1.2:3000/');
+    this.socket = io('http://192.168.56.1:3000/');
     this.socket.on('get message', (obj) => {
       this.setState({chatMessages: [...this.state.chatMessages, obj]});
       console.log('aaa', this.state.chatMessages);
     });
   }
   submitChatMessage() {
-    this.socket.emit('chat message', this.state.obj);
+    this.socket.emit('chat message', {
+      name: this.state.name,
+      chatMessage: this.state.chatMessage,
+    });
     this.setState({chatMessage: ''});
   }
 
@@ -48,7 +51,7 @@ export default class MessageScreen extends React.Component {
                   style={{marginTop: 15, marginLeft: 'auto', marginRight: 5}}>
                   {obj.name}
                 </Text>
-                <Text style={styles.itemMessage}>{obj.chatMessage}</Text>
+                <Text style={styles.itemMessage2}>{obj.chatMessage}</Text>
               </View>
             </View>
           );
@@ -80,12 +83,6 @@ export default class MessageScreen extends React.Component {
             onSubmitEditing={() => this.submitChatMessage()}
             onChangeText={(chatMessage) => {
               this.setState({chatMessage});
-              this.setState({
-                obj: {
-                  name: this.state.name,
-                  chatMessage: this.state.chatMessage,
-                },
-              });
             }}
           />
           <TouchableOpacity onPress={() => this.submitChatMessage()}>
@@ -123,7 +120,17 @@ const styles = StyleSheet.create({
   },
   itemMessage: {
     borderRadius: 30,
-    backgroundColor: '#00B2EE',
+    backgroundColor: '#DDDDDD',
+    color: 'white',
+    fontSize: 20,
+    paddingTop: 3,
+    paddingBottom: 3,
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  itemMessage2: {
+    borderRadius: 30,
+    backgroundColor: '#0066FF',
     color: 'white',
     fontSize: 20,
     paddingTop: 3,
